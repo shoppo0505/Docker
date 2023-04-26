@@ -1,0 +1,36 @@
+https://blog.csdn.net/xxxzzzqqq_/article/details/129419651
+docker pull jenkins/jenkins:jdk17
+docker pull jenkins/jenkins:lts
+初始密码：cat /var/jenkins_home/secrets/initialAdminPassword
+创建container私钥公钥
+ssh-keygen -t rsa -C "jenkins"  #输入完一直回车就结束了
+ssh-keygen -m PEM -t rsa -b 4096 -C "shoppo_0505@hotmail.com"
+cat /app/jenkins_home/.ssh/id_rsa.pub #查看公钥
+eval `ssh-agent -s`  #启动ssh-agent
+ssh-add /app/jenkins_home/.ssh/id_rsa #添加github服务器到 know_hosts
+ssh -T git@github.com
+
+1. 创建app目录，设置777权限
+   登录container
+   docker exec -it -u root docker_jenkins bash
+   mkdir app | chmod 777 app
+
+   /usr/local/apache-maven-3.6.3
+2. 安装java jdk 17
+   https://www.oracle.com/java/technologies/downloads/#java17cd
+3. 安装maven
+https://www.yuanzhanw.cn/archives/61420
+
+docker-compose -f docker-compose.yml up -d
+
+
+docker commit jenkins shoppo0505/jenkins_java17:1.0.0
+
+docker commit practical_mendel shoppo0505/jenkins_plugin:1.0.0
+
+java -jar jenkins-cli.jar -s http://localhost:9999/ list-credentials STORE
+
+问题1：如何避免每次安装插件，尝试过各种方法
+问题2
+
+

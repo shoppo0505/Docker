@@ -1,0 +1,2 @@
+CREATE CERTIFICATE CERT1 FROM FILE = '/var/opt/mssql/CERT1.cer';
+CREATE CERTIFICATE CERT2 FROM FILE = '/var/opt/mssql/CERT2.cer';

@@ -1,0 +1,52 @@
+FROM python
+#FROM docker.registry.clouddev.sogou:5000/online/test-xyz:3
+## 容器内的工作目录
+#WORKDIR /app
+## copy 源代码到容器
+#COPY hello_world.py /app
+#RUN ls /app
+#CMD ["python", "hello_world.py"]
+
+RUN mv /etc/apt/sources.list /etc/apt/sources.list.bak && \
+    echo deb  http://mirrors.ustc.edu.cn/debian/ stretch main non-free contrib >/etc/apt/sources.list && \
+    echo deb-src  http://mirrors.ustc.edu.cn/debian/ stretch main non-free contrib >>/etc/apt/sources.list && \
+    echo deb  http://mirrors.ustc.edu.cn/debian-security stretch/updates main >>/etc/apt/sources.list && \
+    echo deb-src  http://mirrors.ustc.edu.cn/debian-security stretch/updates main >>/etc/apt/sources.list && \
+    echo deb  http://mirrors.ustc.edu.cn/debian/ stretch-updates main non-free contrib >>/etc/apt/sources.list && \
+    echo deb-src  http://mirrors.ustc.edu.cn/debian/ stretch-updates main non-free contrib >>/etc/apt/sources.list && \
+    echo deb  http://mirrors.ustc.edu.cn/debian/ stretch-backports main non-free contrib >>/etc/apt/sources.list && \
+    echo deb-src  http://mirrors.ustc.edu.cn/debian/ stretch-backports main non-free contrib >>/etc/apt/sources.list
+
+#RUN yum -y install crontabs
+RUN apt-get update
+RUN apt-get install -y cron
+#RUN apt-get install libtinfo5
+#RUN apt-get install -y vim
+#COPY ./requirements.txt /requirements.txt
+#RUN pip install -i https://pypi.tuna.tsinghua.edu.cn/simple -r /requirements.txt
+
+CMD ["cron", "-f"]
+
+#设置时区
+#COPY zoneinfo /usr/share/zoneinfo/
+ENV TZ=Asia/Shanghai
+RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
+
+# Copy cron file to cron.d directory
+COPY cornjob/hello-cron /etc/cron.d/hello-cron
+COPY cornjob/crond /etc/pam.d/crond
+
+# apply cron job
+RUN crontab /etc/cron.d/hello-cron
+
+#create the log file to be able to run tail
+RUN touch /var/log/cron.log
+
+#RUN the command on container startup
+#CMD ["/etc/pam.d/crond","crond"]
+CMD cron && tail -f /var/log/cron.log
+
+
+#WORKDIR /app
+#COPY hello_world.py /app
+#CMD ["python", "hello_world.py"]

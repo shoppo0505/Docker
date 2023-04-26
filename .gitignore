@@ -1,0 +1,5 @@
+# Project exclude paths
+/out/
+/Dockerfiles/src/docker_jenkins/jenkins_home/
+/Dockerfiles/src/docker_jenkins/jenkins_home.zip
+*.tar.gz

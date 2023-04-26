@@ -1,0 +1,10 @@
+version: "1.0"
+services:
+  jenkins:
+    image: shoppo0505/docker_jenkins:1.0.0
+    container_name: myJenkins
+    ports:
+      - 9999:8080
+      - 50001:50000
+    init:
+

@@ -1,0 +1,51 @@
+--DROP AVAILABILITY GROUP [AG1]
+--GO
+USE [master]
+GO
+ALTER DATABASE [testdb] SET  ONLINE
+GO
+
+CREATE AVAILABILITY GROUP [AG1]
+        WITH (AUTOMATED_BACKUP_PREFERENCE = SECONDARY,
+				DB_FAILOVER = ON,
+				DTC_SUPPORT = NONE,
+				CLUSTER_TYPE = NONE,
+				REQUIRED_SYNCHRONIZED_SECONDARIES_TO_COMMIT = 0)
+        FOR DATABASE [testdb] REPLICA ON
+        N'sqlNode1'
+            WITH (
+            ENDPOINT_URL = N'TCP://sqlNode1.lab.local:5022',
+            AVAILABILITY_MODE = ASYNCHRONOUS_COMMIT,
+            SEEDING_MODE = AUTOMATIC,
+            FAILOVER_MODE = MANUAL,
+            BACKUP_PRIORITY = 50,
+            SECONDARY_ROLE (ALLOW_CONNECTIONS = ALL)
+                ),
+        N'sqlNode2'
+            WITH (
+            ENDPOINT_URL = N'TCP://sqlNode2.lab.local:5022',
+            AVAILABILITY_MODE = ASYNCHRONOUS_COMMIT,
+            SEEDING_MODE = AUTOMATIC,
+            FAILOVER_MODE = MANUAL,
+            BACKUP_PRIORITY = 50,
+            SECONDARY_ROLE (ALLOW_CONNECTIONS = ALL)
+                ),
+        N'sqlNode3'
+            WITH (
+            ENDPOINT_URL = N'TCP://sqlNode3.lab.local:5022',
+            AVAILABILITY_MODE = ASYNCHRONOUS_COMMIT,
+            SEEDING_MODE = AUTOMATIC,
+            FAILOVER_MODE = MANUAL,
+            BACKUP_PRIORITY = 50,
+            SECONDARY_ROLE (ALLOW_CONNECTIONS = ALL)
+                );
+GO
+
+ALTER AVAILABILITY GROUP [AG1]
+ADD LISTENER N'listener' (
+WITH IP
+((N'172.16.0.1', N'255.255.255.0')
+)
+, PORT=5022);
+
+GO
