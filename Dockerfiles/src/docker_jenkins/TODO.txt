@@ -12,7 +12,7 @@ ssh -T git@github.com
 
 1. 创建app目录，设置777权限
    登录container
-   docker exec -it -u root docker_jenkins bash
+   docker exec -it -u root jenkins bash
    mkdir app | chmod 777 app
 
    /usr/local/apache-maven-3.6.3
