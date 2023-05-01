@@ -1,10 +1,39 @@
 version: "1.0"
 services:
-  jenkins:
+  docker_jenkins1:
     image: shoppo0505/docker_jenkins:1.0.0
-    container_name: myJenkins
+    container_name: docker_jenkins1
+    networks:
+      mynet:
+        ipv4_address: 172.19.0.2
     ports:
-      - 9999:8080
-      - 50001:50000
-    init:
-
+      - 9002:8080
+      - 50002:50000
+      - 2202:22
+  docker_jenkins2:
+    image: shoppo0505/docker_jenkins:1.0.0
+    container_name: docker_jenkins2
+    networks:
+      mynet:
+        ipv4_address: 172.19.0.3
+    ports:
+      - 9003:8080
+      - 50003:50000
+      - 2203:22
+#    volumes:
+#      - D:\Git\Docker\Dockerfiles\src\docker_jenkins\jenkins_home\:/var/jenkins_home/
+  docker_jenkins3:
+    image: shoppo0505/docker_jenkins:1.0.0
+    container_name: docker_jenkins3
+    networks:
+      mynet:
+        ipv4_address: 172.19.0.4
+    ports:
+      - 9004:8080
+      - 50004:50000
+      - 2204:22
+networks:
+  mynet:
+    ipam:
+      config:
+        - subnet: 172.19.0.0/16

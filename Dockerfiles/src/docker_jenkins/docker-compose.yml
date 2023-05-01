@@ -1,18 +1,42 @@
 version: "1.0"
 services:
+  jenkinslts:
+    image: jenkins/jenkins:lts
+    container_name: jenkinslts
+    hostname: jenkinslts
+    networks:
+      mynet:
+        ipv4_address: 172.19.0.2
+    ports:
+      - 9002:8080
+      - 50002:50000
+      - 2202:22
   jenkins:
     image: shoppo0505/jenkins_java17:1.0.0
     container_name: jenkins
-    user : "1000"
+    hostname: jenkinslts
+    networks:
+      mynet:
+        ipv4_address: 172.19.0.3
     ports:
-      - 9999:8080
-      - 5000:50000
+      - 9003:8080
+      - 50003:50000
+      - 2203:22
     volumes:
       - D:\Git\Docker\Dockerfiles\src\docker_jenkins\jenkins_home\:/var/jenkins_home/
-
-  jenkins2:
-    image: jenkins/jenkins:lts
-    container_name: jenkinslts
+  docker_jenkins:
+    image: shoppo0505/docker_jenkins:1.0.0
+    container_name: docker_jenkins
+    hostname: jenkinslts
+    networks:
+      mynet:
+        ipv4_address: 172.19.0.4
     ports:
-      - 9998:8080
-      - 5001:50000
+      - 9004:8080
+      - 50004:50000
+      - 2204:22
+networks:
+  mynet:
+    ipam:
+      config:
+        - subnet: 172.19.0.0/16

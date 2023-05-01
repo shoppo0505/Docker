@@ -13,6 +13,6 @@ unzip /var/jenkins_home.zip -d /var/jenkins_home
 chmod 755 /var/jenkins_home/apache-maven-3.9.1/bin/*
 chmod 700 /var/jenkins_home/.ssh/*
 #mkdir /var/jenkins_home/.ssh | cp /app/jenkins_home/.ssh/* /var/jenkins_home/.ssh/.
-java -Duser.home=/app/jenkins_home -jar /usr/share/jenkins/jenkins.war
+java -Duser.home=/var/jenkins_home -jar /usr/share/jenkins/jenkins.war
 
 exit 0
