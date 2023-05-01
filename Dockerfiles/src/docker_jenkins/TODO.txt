@@ -7,12 +7,14 @@ ssh-keygen -t rsa -C "jenkins"  #输入完一直回车就结束了
 ssh-keygen -m PEM -t rsa -b 4096 -C "shoppo_0505@hotmail.com"
 cat /app/jenkins_home/.ssh/id_rsa.pub #查看公钥
 eval `ssh-agent -s`  #启动ssh-agent
-ssh-add /app/jenkins_home/.ssh/id_rsa #添加github服务器到 know_hosts
+ssh-add /var/jenkins_home/.ssh/id_rsa #添加github服务器到 know_hosts
 ssh -T git@github.com
 
 1. 创建app目录，设置777权限
    登录container
-   docker exec -it -u root jenkins bash
+   docker exec -it --privileged -u root jenkinslts bash
+   docker exec -it --privileged -u root jenkins bash
+   docker exec -it --privileged -u root docker_jenkins1 bash
    mkdir app | chmod 777 app
 
    /usr/local/apache-maven-3.6.3
@@ -30,7 +32,83 @@ docker commit practical_mendel shoppo0505/jenkins_plugin:1.0.0
 
 java -jar jenkins-cli.jar -s http://localhost:9999/ list-credentials STORE
 
-问题1：如何避免每次安装插件，尝试过各种方法
+问题1：start.sh如何在容器每次启动的时候执行
 问题2
 
 
+#############激活docker tcptcp://localhost:2375
+docker desktop中激活Expose daemon on tcp://localhost:2375 without TLS
+
+
+,
+  "hosts": ["tcp://0.0.0.0:2375"]
+
+  docker -H 192.168.31.168:2375 info
+
+  docker -H 127.0.0.0:2375 info
+
+
+  正确
+  docker -H localhost:2375 info
+
+  ssh jenkins:[远程节点的ip]
+
+  docker查看容器ip
+  docker inspect jenkinslts
+
+
+  jenkinslts 172.19.0.2  ssh jenkins:172.19.0.2
+  jenkins 172.19.0.3	 ssh jenkins:172.19.0.3
+  docker_jenkins 172.19.0.4	ssh jenkins:172.19.0.4
+
+  ssh jenkins@172.19.0.2 -p 2200
+  ssh jenkins@172.19.0.3 -p 2201
+  ssh jenkins@172.19.0.4 -p 2202
+
+  docker exec -it --user root jenkinslts /bin/bash
+
+  ssh-copy-id -i /var/jenkins_home/.ssh/id_rsa.pub -p 50000 jenkins@172.19.0.2
+  ssh-copy-id -i /var/jenkins_home/.ssh/id_rsa.pub -p 50001 jenkins@172.19.0.3
+  ssh-copy-id -i /var/jenkins_home/.ssh/id_rsa.pub -p 25000 jenkins@172.19.0.4
+
+  #####iptables, openssh-server, openssh-client, netstat
+  apt-get install -y openssh-server
+  apt-get install -y openssh-client
+  apt-get install -y iptables
+  apt-get install -y netstat
+
+  ssh jenkins@172.19.0.2 -p 2202
+  ssh jenkins@172.19.0.3 -p 2203
+  ssh jenkins@172.19.0.4 -p 2204
+
+
+  ssh root@172.19.0.2 -p 2200
+  ssh root@172.19.0.3 -p 2201
+  ssh root@172.19.0.4 -p 2202
+
+  ssh root@127.0.0.0 -p 2201
+
+  运行容器时添加privileged,然后开放端口22
+   iptables -A INPUT -p tcp --dport 22 -j ACCEPT
+
+
+   复制sshd_config到/etc/ssh/sshd_config
+   ####启动 sshd，ssh-agent
+   service ssh start
+   ssh-agent
+   # cat  /var/jenkins_home/.ssh/id_rsa.pub >>  /var/jenkins_home/.ssh/authorized_keys
+
+   ssh-copy-id -p 22 jenkins@172.19.0.3
+   ssh-copy-id -p 22 jenkins@172.19.0.4
+   检查连通性，
+   ssh -p 22 jenkins@172.19.0.3
+
+   成功url：
+   https://www.jianshu.com/p/e12179b1208e
+
+   #####确认已开启命令
+   ps -e|grep ssh
+
+   iptables -L
+
+   cat  /var/jenkins_home/.ssh/id_rsa.pub >>  /var/jenkins_home/.ssh/authorized_keys
