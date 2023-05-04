@@ -65,7 +65,7 @@ docker desktop中激活Expose daemon on tcp://localhost:2375 without TLS
   ssh jenkins@172.19.0.3 -p 2201
   ssh jenkins@172.19.0.4 -p 2202
 
-  docker exec -it --user root jenkinslts /bin/bash
+  docker exec -it --user root docker_jenkins1 /bin/bash
 
   ssh-copy-id -i /var/jenkins_home/.ssh/id_rsa.pub -p 50000 jenkins@172.19.0.2
   ssh-copy-id -i /var/jenkins_home/.ssh/id_rsa.pub -p 50001 jenkins@172.19.0.3

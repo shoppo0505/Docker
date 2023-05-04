@@ -17,12 +17,23 @@ RUN mv /etc/apt/sources.list /etc/apt/sources.list.bak && \
     echo deb  http://mirrors.ustc.edu.cn/debian/ bullseye main >/etc/apt/sources.list && \
 #    echo deb  http://mirrors.ustc.edu.cn/debian/ bullseye-security main >>/etc/apt/sources.list && \
     echo deb  http://mirrors.ustc.edu.cn/debian/ bullseye-updates main >>/etc/apt/sources.list
-RUN apt-get update && apt-get -y install iptables openssh-server openssh-client
+RUN apt-get update && apt-get -y install iptables openssh-server openssh-client expect
 
+COPY sshd_config /etc/ssh/.
+COPY ssh_config /etc/ssh/.
+RUN service ssh start
+RUN ssh-agent
+RUN echo "root:root" | chpasswd
+RUN echo "jenkins:jenkins" | chpasswd
+COPY .bashrc /root/.
+#CMD service ssh start
+#CMD ssh-agent
 
 USER jenkins
 COPY jenkins_home.zip /var/.
 COPY start.sh /var/.
+COPY active.sh /var/.
+COPY auto_ssh.sh /var/.
 
 #RUN chmod 755 /app/jenkins_home/apache-maven-3.9.1/bin/*
 #RUN chmod 700 /app/jenkins_home/.ssh/*
