@@ -1,0 +1,45 @@
+version: '3'
+services:
+  redis:
+    # 镜像名称以及版本号
+    image: 'redis:latest'
+    # 失败后总是重启
+    restart: always
+    # 自定义容器名
+    container_name: redis
+    # 文件夹以及文件映射
+    volumes:
+      - D:\dbs\redis\data:/data
+      # 注意这里需要先  /usr/local/app/redis/conf  新建redis.conf文件  redis.conf文件可从http://www.redis.cn/下载
+      - D:\dbs\redis\redis.conf:/etc/redis/redis.conf
+    command:
+      # 以配置文件的方式启动 redis.conf
+      redis-server /etc/redis/redis.conf
+    ports:
+      # 端口号
+      - '6378:6379'
+    networks:
+      - docker_redis_default
+
+  docker-web:
+    # 镜像名称以及版本号
+    image: 'shoppo0505/docker_web:1.1.0'
+    # 失败后总是重启
+    restart: always
+    # 自定义容器名
+    container_name: docker_web
+    ports:
+      # 端口号
+      - '8000:8888'
+    networks:
+      - docker_redis_default
+
+networks:
+  docker_redis_default:
+    external: false
+#在当前目录打开终端，使用命令 docker-compose up -d 即可运行； 停止服务：docker-compose down
+#最好打开redis的数据持久化配置；
+#data、logs分别为数据和日志目录，可参考下面的conf配置；
+#redis的认证密码一般配置在配置文件的requirepass字段。如果不使用配置文件，可以使用 command: redis-server --requirepass yourpass 配置认证密码；
+#如果只是临时简单使用reids,可以不配置volumes；
+#最好在设置reids值时，附带版本号，防止版本更新，影响配置而不可用。
