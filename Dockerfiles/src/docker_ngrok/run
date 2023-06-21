@@ -1,0 +1,1 @@
+docker run --restart -e DOMAIN="ngrok.mikemhm.xyz" -v .\ngrok:/myfiles hteen/ngrok /bin/sh /build.sh

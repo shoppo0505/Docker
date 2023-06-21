@@ -1,0 +1,33 @@
+FROM alpine:latest
+
+RUN sed -i 's/dl-cdn.alpinelinux.org/mirrors.ustc.edu.cn/g' /etc/apk/repositories \
+    && sed -i 's/dl-cdn.alpinelinux.org/mirrors.aliyun.com/g' /etc/apk/repositories \
+
+RUN apk add --update vim \
+    && apk add curl \
+    && apk add bash \
+    && apk add docker \
+    && apk add py-pip openrc \
+#    && apk add python-dev libffi-dev openssl-dev gcc libc-dev make \
+    && add --update \
+#    && pip install --upgrade pip \
+#    && pip3 install PyYAML==5.3 -i https://pypi.tuna.tsinghua.edu.cn/simple \
+#    && pip3 install docker-compose -i https://pypi.tuna.tsinghua.edu.cn/simple \
+#    && curl -L https://get.daocloud.io/docker/compose/releases/download/1.24.1/docker-compose-`uname -s`-`uname -m` > /usr/local/bin/docker-compose \
+    && curl -SL https://github.com/docker/compose/releases/download/v2.7.0/docker-compose-linux-x86_64 -o /usr/local/bin/docker-compose \
+#    && rc-update add docker default
+    && chmod +x /usr/local/bin/docker-compose \  //改权限
+
+add ...
+RUN tar -xf harbor-offline-installer-v1.8.2.tgz -C /usr/local/ \
+    && cd /usr/local/harbor \
+    && vim harbor.yml
+
+
+RUN apk add --update vim      #//容器内部新安装vim编辑器软件
+    ctrl+PQ         #//温柔返回到宿主机
+    docker ps -a     #//容器还活着
+    docker commit  test   alpine:vim      #//将当前容器保存为一个新镜像
+    docker images                           #//发现有三个镜像
+    docker save alpine:vim  -o  /root/alpine_v2_vim.tar      #//将新镜像导出到本地一个文件中。
+    scp   /root/alpine_vim.tar    root@[另外一个宿主机ip]:/root/alpine_v2_vim.tar

@@ -1,0 +1,16 @@
+FROM alpine:latest
+
+WORKDIR /app
+
+RUN sed -i 's/dl-cdn.alpinelinux.org/mirrors.ustc.edu.cn/g' /etc/apk/repositories \
+    && sed -i 's/dl-cdn.alpinelinux.org/mirrors.aliyun.com/g' /etc/apk/repositories
+
+RUN apk add curl --no-cache \
+    && apk add bash --no-cache \
+    && apk add docker --no-cache
+
+ADD ./dockerfiles/* /app/
+
+#RUN tar zxf /app/harbor-online-installer-v2.8.2.tgz
+
+CMD ["dockerd"]

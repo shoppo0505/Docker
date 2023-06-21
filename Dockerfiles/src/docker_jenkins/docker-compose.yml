@@ -32,6 +32,12 @@ services:
       - 9004:8080
       - 50004:50000
       - 2204:22
+  docker_jenkins4:
+    image: shoppo0505/docker_jenkins:1.0.0
+    container_name: docker_jenkins_slave3
+    networks:
+      mynet:
+        ipv4_address: 172.19.0.5
 networks:
   mynet:
     ipam:

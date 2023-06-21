@@ -1,0 +1,1 @@
+docker run --name my_registry -d -p 4000:5000 -v d:/var/my_registry/:/var/lib/registry --privileged=true registry

@@ -1,0 +1,1 @@
+docker run -d  --name cpolar --net host -e TOKEN=NTYxNzBhYTYtODQxNi00OTZmLThmOTItYzhmMmQ4MTVhYWI2 --restart always shoppo0505/cpolar:1.0.0 tcp 22
